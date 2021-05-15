@@ -6,17 +6,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Profile</title>
         <link rel="stylesheet" type="text/css" href="/css/gamerProfile.css">
+        <script src="/scripts/gamerProfile/gamerProfile.js"></script>
+        <script src="/scripts/global/global.js"></script>
     </head>
-    <body>
+    <body onload="show()">
         <h1>Arcades Assemble</h1>
-        <div class="exit"><a href="/games">&times;</a></div>
+        <div class="dropdown">
+            <div class="dropbtn">
+                <div class="avatar-top"><img src="/resources/gamerProfile/images/sisu.png" width="50px" height="50px"></div>
+                <div class="dropdown-content">
+                    <!-- <a href="gamerprofile.html">Edit Profile</a> -->
+                    <a href="/games">Exit</a>
+                </div>
+            </div>
+        </div>
         <div class="container">
             <div class="avatar"><img src="/resources/gamerProfile/images/sisu.png" width="80%" height="90%"></div>
             <div class="info">
-                <p>Sisu</p>
-                <span>Name: Sisu The Dragon</span>
+                <p id="ign">Sisu</p>
+                <span id="name">Name: Sisu The Dragon</span>
                 <br>
-                <span>Email: sisu@thelastdragon.com</span>  
+                <span id="email">Email: sisu@thelastdragon.com</span>  
             </div>
         </div>
         <div class="scores">

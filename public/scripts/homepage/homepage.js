@@ -5,6 +5,9 @@ function checkLoginStatus(){
         document.getElementById("nav-bar").style = "width: min-content; float: right; margin-right: 20px;"
     }
 }
+function fetchProfile(){
+    getProfile();
+}
 
 function logout(){
     userLogout();

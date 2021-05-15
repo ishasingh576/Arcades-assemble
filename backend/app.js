@@ -13,7 +13,7 @@ const cors = require('cors');
 const User = require('./models/user')
 const DurationGame = require('./models/durationgame')
 
-const User = require('./models/user')
+// const User = require('./models/user')
 const Leaderboard = require('./models/leaderboard');
 
 const {entry} = require('./controllers/leaderboard')
@@ -34,10 +34,10 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to remote MongoDB cluster
-// const dbURI = process.env.MONGODB_URI;
+const dbURI = process.env.MONGODB_URI;
 
 // Local MongoDB Server
-const dbURI = 'mongodb://localhost:27017/login-app-db';
+// const dbURI = 'mongodb://localhost:27017/login-app-db';
 
 mongoose.connect(dbURI)
 const db = mongoose.connection
@@ -187,11 +187,31 @@ app.post('/api/login', async (req, res) => {
 	res.json({ status: 'error', error: 'Invalid IGN/Password' })
 })
 
+app.post('/api/profile', authenticateToken, async (req, res) => {
+	// console.log(req.user);
+	const {ign} = await req.body;
+	let user = await User.findOne({ign: ign});
+	if(user) {
+		// console.log(user);
+		return res.json({status: 'okay', user: user})
+	}
+	else{
+		res.json({status: 'error', msg: 'user not found'});
+	}
+})
+
+app.post('/api/editProfile', async (req, res) => {
+	const { ign, firstName, lastName, middleName } = req.body;
+	const newDetails = {firstName: firstName, lastName: lastName, middleName: middleName};
+	const user = await User.findOneAndUpdate({ ign: ign }, newDetails, {new: true});
+	return res.json({ status: 'ok', msg: 'Entry updated'});
+})
+
+
 function authenticateToken(req, res, next) {
 	const authHeader = req.headers['authorization']
-	// console.log(authHeader)
+	console.log(authHeader)
 	const token = authHeader && authHeader.split(' ')[1]
-	// console.log(token)
 	if(token == null) return res.json({status: 'error', error:'No token present'})
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 		if (err) return res.json({ status: 'error', error: 'Invalid jwt token', tokenExpired: true})
@@ -235,6 +255,7 @@ app.post('/token', (req, res) => {
 
 app.delete('/api/logout', (req, res) => {
 	const authHeader = req.headers['authorization']
+	console.log(authHeader)
 	const reqToken = authHeader && authHeader.split(' ')[1]
 	refreshTokens = refreshTokens.filter(token => token !== reqToken)
 	res.json({ status: 'ok'})
